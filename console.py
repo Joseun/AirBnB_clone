@@ -93,7 +93,11 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, line):
         """ Prints string representation of all instances of BaseModel\n """
+<<<<<<< HEAD
         if not line:
+=======
+         if not line:
+>>>>>>> origin/master
             for k, v in storage.all().items():
                     print(str(storage.all()[k]))
         else:
@@ -105,7 +109,11 @@ class HBNBCommand(cmd.Cmd):
                     if k[0] == line:
                         print(str(storage.all()[k]))
 
+<<<<<<< HEAD
     def do_update(self, line):
+=======
+     def do_update(self, line):
+>>>>>>> origin/master
         """ Updates an instance of BaseModel\n """
         if not line:
             print("** class name missing **")
