@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 import uuid
 
+
 class Review(BaseModel):
     """Defines the class Review """
 

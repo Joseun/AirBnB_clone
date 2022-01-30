@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 import uuid
 
+
 class User(BaseModel):
     """Defines the class User """
 

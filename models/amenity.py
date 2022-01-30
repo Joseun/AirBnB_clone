@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 import uuid
 
+
 class Amenity(BaseModel):
     """Defines the class Amenity """
 
