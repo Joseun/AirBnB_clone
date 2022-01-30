@@ -5,7 +5,7 @@ A command interpreter to manipulate data without a visual interface (perfect for
 project_image
 
 Installation
-git clone https://github.com/edafeoke/AirBnB_clone.git
+git clone https://github.com/Joseun/AirBnB_clone.git
 cd AirBnB_clone
 Usage
 Execution
