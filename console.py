@@ -19,28 +19,9 @@ class HBNBCommand(cmd.Cmd):
                'City': City, 'Amenity': Amenity, 'Review': Review}
     prompt = '(hbnb)'
 
-    def cmdloop(self, intro=None):
-        return cmd.Cmd.cmdloop(self, intro)
-
-    def parseline(self, line):
-        ret = cmd.Cmd.parseline(self, line)
-        return ret
-
-    def onecmd(self, s):
-        return cmd.Cmd.onecmd(self, s)
-
     def emptyline(self):
         """ This function ignores an empty line input """
         pass
-
-    def default(self, line):
-        return cmd.Cmd.default(self)
-
-    def precmd(self, line):
-        return cmd.Cmd.precmd(self, line)
-
-    def postcmd(self, stop, line):
-        return cmd.Cmd.postcmd(self, stop, line)
 
     def do_create(self, line):
         """ Create a new instance of BaseModel\n """
@@ -93,13 +74,10 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, line):
         """ Prints string representation of all instances of BaseModel\n """
-<<<<<<< HEAD
+
         if not line:
-=======
-         if not line:
->>>>>>> origin/master
             for k, v in storage.all().items():
-                    print(str(storage.all()[k]))
+                print(str(storage.all()[k]))
         else:
             if line not in HBNBCommand.classes:
                 print("** class doesn't exist **")
@@ -109,11 +87,7 @@ class HBNBCommand(cmd.Cmd):
                     if k[0] == line:
                         print(str(storage.all()[k]))
 
-<<<<<<< HEAD
     def do_update(self, line):
-=======
-     def do_update(self, line):
->>>>>>> origin/master
         """ Updates an instance of BaseModel\n """
         if not line:
             print("** class name missing **")
