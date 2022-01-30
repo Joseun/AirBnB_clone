@@ -15,9 +15,12 @@ from models.user import User
 class HBNBCommand(cmd.Cmd):
     """ AirBNB command intepreter  """
 
-    classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place, 'State': State,
-               'City': City, 'Amenity': Amenity, 'Review': Review}
-    prompt = '(hbnb)'
+    classes = {
+        'BaseModel': BaseModel, 'User': User, 'Place': Place, 'State': State,
+        'City': City, 'Amenity': Amenity, 'Review': Review
+    }
+
+    prompt = '(hbnb) '
 
     def emptyline(self):
         """ This function ignores an empty line input """
@@ -49,7 +52,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
             else:
                 for k, v in storage.all().items():
-                    if k == line[0].line[1]:
+                    if k == "{}.{}".format(line[0], line[1]):
                         print(storage.all()[k])
                     else:
                         print("** no instance found **")
@@ -112,6 +115,40 @@ class HBNBCommand(cmd.Cmd):
                             obj.save()
                         else:
                             print("** value missing **")
+
+    def onecmd(self, line):
+        """Interpret the argument as though it had been typed in response
+        to the prompt.
+        Checks whether this line is typed at the normal prompt or in
+        a breakpoint command list definition.
+        """
+        try:
+            classname, command = line.split('.')
+            if classname not in HBNBCommand.classes:
+                return cmd.Cmd.onecmd(self, line)
+            else:
+                if command == 'all()':
+                    self.do_all(classname)
+                    return
+                elif command == 'count()':
+                    counter = 0
+                    all_objs = models.storage.all()
+                    for k in all_objs.keys():
+                        key = k.split('.')
+                        if key[0] == classname:
+                            counter += 1
+                    print(counter)
+                    return
+                else:
+                    raw = command[command.find('(')+1:command.find(')')]
+                    raw = raw.split(', ')
+                    id = raw[0][1:-1]
+                    c = command[0: command.find('(')]
+                    cm = "{} {} {} {}".format(c, classname, id.replace('"', ''),
+                                              " ".join(raw[1:]))
+                    return cmd.Cmd.onecmd(self, cm)
+        except:
+            return cmd.Cmd.onecmd(self, line)
 
     def do_EOF(self, arg):
         """ End of file"""

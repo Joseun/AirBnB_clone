@@ -12,17 +12,3 @@ class User(BaseModel):
     password = ''
     first_name = ''
     last_name = ''
-
-    def __init__(self):
-        """Intialize a new Rectangle.
-        Args:
-            width (int): The width of the new Rectangle.
-            height (int): The height of the new Rectangle.
-            x (int): private attribute
-            y (int): private attribute
-        """
-        super().__init__(id, created_at, updated_at)
-        self.id = id
-        self.created_at = created_at
-        self.updated_At = updated_at
-        
