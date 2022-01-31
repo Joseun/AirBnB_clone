@@ -52,7 +52,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
             else:
                 for k, v in storage.all().items():
-                    if k == "{}.{}".format(line[0], line[1]):
+                    x = ("{}.{}".format(line[0], line[1]))
+                    if k == x:
                         print(storage.all()[k])
                     else:
                         print("** no instance found **")
@@ -69,9 +70,9 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
             else:
                 for k, v in storage.all().items():
-                    if k == line[0].line[1]:
-                        del storage.all()[k]
-                        storage.save()
+                    x = ("{}.{}".format(line[0], line[1]))
+                    if k == x:
+                        print(storage.all()[k])
                     else:
                         print("** no instance found **")
 
@@ -102,17 +103,18 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
             else:
                 for k, v in storage.all().items():
-                    if k == line[0].line[1]:
-                        obj = storage.all()[k]
+                    x = ("{}.{}".format(line[0], line[1]))
+                    if k == x:
+                        y = storage.all()[k]
                     else:
                         print("** no instance found **")
                 if not line[2]:
                     print("** attribute name missing **")
                 else:
-                    for k, v in obj.__dict__.items():
+                    for k, v in y.items():
                         if k == line[2]:
-                            obj.k = line[3]
-                            obj.save()
+                            y[k] = line[3]
+                            y.save()
                         else:
                             print("** value missing **")
 
