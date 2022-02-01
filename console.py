@@ -20,6 +20,8 @@ class HBNBCommand(cmd.Cmd):
         'City': City, 'Amenity': Amenity, 'Review': Review
     }
 
+    all_objs = storage.all()
+
     prompt = '(hbnb) '
 
     def emptyline(self):
@@ -52,10 +54,10 @@ class HBNBCommand(cmd.Cmd):
             elif len(line) != 2:
                 print("** instance id missing **")
             else:
-                for k, v in storage.all().items():
+                for k, v in self.all_objs.items():
                     x = ("{}.{}".format(line[0], line[1]))
                     if k == x:
-                        print(storage.all()[k])
+                        print(all_objs[k])
                         return
                     else:
                         print("** no instance found **")
@@ -71,10 +73,10 @@ class HBNBCommand(cmd.Cmd):
             elif len(line) != 2:
                 print("** instance id missing **")
             else:
-                for k, v in storage.all().items():
+                for k, v in self.all_objs.items():
                     x = ("{}.{}".format(line[0], line[1]))
                     if k == x:
-                        del storage.all()[k]
+                        del self.all_objs[k]
                         storage.save()
                         return
                 else:
@@ -85,13 +87,13 @@ class HBNBCommand(cmd.Cmd):
 
         storage.reload()
         if not line:
-            for k, v in storage.all().items():
+            for k, v in self.all_objs.items():
                 print(str(storage.all()[k]))
         else:
             if line not in HBNBCommand.classes:
                 print("** class doesn't exist **")
             else:
-                for k, v in storage.all().items():
+                for k, v in self.all_objs.items():
                     x = k.split('.')
                     if x[0] == line:
                         print(str(storage.all()[k]))
@@ -105,16 +107,18 @@ class HBNBCommand(cmd.Cmd):
             if line[0] in HBNBCommand.classes:
                 if len(line) > 1:
                     x = ("{}.{}".format(line[0], line[1]))
-                    if x in storage.all():
+                    if x in self.all_objs:
                         if len(line) > 2:
                             if len(line) > 3:
-                                y = storage.all()[x]
+                                y = self.all_objs[x]
                                 y = y.to_dict()
                                 if line[2] in y:
                                     valtype = type(y[line[2]])
                                     y[line[2]] = valtype(line[3])
-                                    print("yyyy 0000 {}".format(y))
                                     storage.update(x, y)
+                                    # HBNBCommand.classes[line[0]].save(self)
+                                    storage.reload()
+                                    storage.save()
                                     return
                                 else:
                                     print("** attribute doesn't exist **")
@@ -145,7 +149,7 @@ class HBNBCommand(cmd.Cmd):
                     return
                 elif command == 'count()':
                     counter = 0
-                    all_objs = models.storage.all()
+                    #all_objs = models.storage.all()
                     for k in all_objs.keys():
                         key = k.split('.')
                         if key[0] == classname:

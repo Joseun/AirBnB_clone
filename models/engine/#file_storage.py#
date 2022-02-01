@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3
 """Defining the class BaseModel"""
 from datetime import datetime
@@ -60,7 +61,7 @@ class FileStorage:
         x = file_data
         x.update(new_data)
         # Sets file's current position at offset.
-        with open(FileStorage.__file_path, 'w') as file:
+        with open(FileStorage.__file_path, 'r+') as file:
             # file.seek(0)
             # convert back to json.
             json.dump(x, file, indent=4)
@@ -82,9 +83,9 @@ class FileStorage:
             file_data = {}
         # Join new_data with file_data inside emp_details
         x = file_data
-        # print("data in update fucntion{}>>>>>>......".format(update_data))
+        print("data in update fucntion{}>>>>>>......".format(update_data))
         x[class_id] = update_data
-        # print("new updated json {}--------------------;;;;;".format(x))
+        print("new updated json {}--------------------;;;;;".format(x))
         # Sets file's current position at offset.
         with open(FileStorage.__file_path, 'w') as file:
             # file.seek(0)
