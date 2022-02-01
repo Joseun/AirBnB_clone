@@ -23,7 +23,7 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
 
     def emptyline(self):
-        """ This function ignores an empty line input """
+        """ This function ignores an empty line input\n """
         pass
 
     def do_create(self, line):
@@ -42,19 +42,21 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, line):
         """ Prints the string representation of an instance\n """
+
         if not line:
             print("** class name missing **")
         else:
             line = line.split()
             if line[0] not in HBNBCommand.classes:
                 print("** class name missing **")
-            elif not line[1]:
+            elif len(line) != 2:
                 print("** instance id missing **")
             else:
                 for k, v in storage.all().items():
                     x = ("{}.{}".format(line[0], line[1]))
                     if k == x:
                         print(storage.all()[k])
+                        return
                     else:
                         print("** no instance found **")
 
@@ -66,19 +68,22 @@ class HBNBCommand(cmd.Cmd):
             line = line.split()
             if line[0] not in HBNBCommand.classes:
                 print("** class doesn't exist **")
-            elif not line[1]:
+            elif len(line) != 2:
                 print("** instance id missing **")
             else:
                 for k, v in storage.all().items():
                     x = ("{}.{}".format(line[0], line[1]))
                     if k == x:
-                        print(storage.all()[k])
-                    else:
-                        print("** no instance found **")
+                        del storage.all()[k]
+                        storage.save()
+                        return
+                else:
+                    print("** no instance found **")
 
     def do_all(self, line):
         """ Prints string representation of all instances of BaseModel\n """
 
+        storage.reload()
         if not line:
             for k, v in storage.all().items():
                 print(str(storage.all()[k]))
@@ -87,8 +92,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
             else:
                 for k, v in storage.all().items():
-                    k = k.split()
-                    if k[0] == line:
+                    x = k.split('.')
+                    if x[0] == line:
                         print(str(storage.all()[k]))
 
     def do_update(self, line):
@@ -97,28 +102,34 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             line = line.split()
-            if line[0] not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-            elif not line[1]:
-                print("** instance id missing **")
-            else:
-                for k, v in storage.all().items():
+            if line[0] in HBNBCommand.classes:
+                if len(line) > 1:
                     x = ("{}.{}".format(line[0], line[1]))
-                    if k == x:
-                        y = storage.all()[k]
+                    if x in storage.all():
+                        if len(line) > 2:
+                            if len(line) > 3:
+                                y = storage.all()[x]
+                                y = y.to_dict()
+                                if line[2] in y:
+                                    valtype = type(y[line[2]])
+                                    y[line[2]] = valtype(line[3])
+                                    print("yyyy 0000 {}".format(y))
+                                    storage.update(x, y)
+                                    return
+                                else:
+                                    print("** attribute doesn't exist **")
+                            else:
+                                print("** value missing **")
+                        else:
+                            print("** attribute name missing **")
                     else:
                         print("** no instance found **")
-                if not line[2]:
-                    print("** attribute name missing **")
                 else:
-                    for k, v in y.items():
-                        if k == line[2]:
-                            y[k] = line[3]
-                            y.save()
-                        else:
-                            print("** value missing **")
+                    print("** instance id missing **")
+            else:
+                print("** class doesn't exist **")
 
-    def onecmd(self, line):
+    '''    def onecmd(self, line):
         """Interpret the argument as though it had been typed in response
         to the prompt.
         Checks whether this line is typed at the normal prompt or in
@@ -139,26 +150,25 @@ class HBNBCommand(cmd.Cmd):
                         key = k.split('.')
                         if key[0] == classname:
                             counter += 1
-                    print(counter)
-                    return
-                else:
-                    raw = command[command.find('(')+1:command.find(')')]
-                    raw = raw.split(', ')
-                    id = raw[0][1:-1]
-                    c = command[0: command.find('(')]
-                    cm = "{} {} {} {}".format(c, classname, id.replace('"', ''),
-                                              " ".join(raw[1:]))
-                    return cmd.Cmd.onecmd(self, cm)
+                            print(counter)
+                            return
+                        else:
+                            raw = command[command.find('(')+1:command.find(')')]
+                            raw = raw.split(', ')
+                            id = raw[0][1:-1]
+                            c = command[0: command.find('(')]
+                            cm = "{} {} {} {}".format(c, classname, id.replace('"', ''),
+                                                      " ".join(raw[1:]))
+                            return cmd.Cmd.onecmd(self, cm)
         except:
             return cmd.Cmd.onecmd(self, line)
-
+    '''
     def do_EOF(self, arg):
         """ End of file"""
         return True
 
     def do_quit(self, arg):
         """ exit the program"""
-
         return SystemExit
 
 
