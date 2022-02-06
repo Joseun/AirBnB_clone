@@ -1,29 +1,38 @@
 #!/usr/bin/python3
-'''
-module containing Review class tests
-'''
+"""Test class Review"""
 
+import models
 import unittest
 from models.review import Review
 
 
-class TestReview(unittest.TestCase):
-    '''
-    Test class that tests the Review class
-    '''
-
-    def setUp(self):
-        '''
-        test instance
-        '''
-        obj = Review()
-        obj.text = 'asdf'
+class Test_review(unittest.TestCase):
+    """Simple test model"""
 
     def test_attr(self):
-        '''
-        docs
-        '''
-        self.assertIsInstance(obj, Review, "")
+        """Test class attrbute"""
+        is_attr = False
+        list_ = [
+            'place_id',
+            'user_id',
+            'text'
+        ]
+        for key in list_:
+            attr = hasattr(Review, key)
+            if not attr:
+                break
+            self.assertEqual(attr, True)
 
-if __name__ == '__main__':
+    def test_type_str(self):
+        """Test type of class attribute"""
+
+        splace_id = type(Review.place_id).__name__
+        suser_id = type(Review.user_id).__name__
+        stext = type(Review.text).__name__
+
+        self.assertEqual(splace_id, 'str')
+        self.assertEqual(suser_id, 'str')
+        self.assertEqual(stext, 'str')
+
+if __name__ == "__main__":
     unittest.main()

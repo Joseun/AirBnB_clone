@@ -3,8 +3,8 @@
         "id": "238a4510-db0b-46ce-b4ae-4da48d95dea6",
         "created_at": "2022-02-01T00:57:46.349300",
         "updated_at": "2022-02-01T00:57:46.349314",
-        "name": "Olli",
-        "my_number": 10,
+        "name": "Fred",
+        "my_number": 1,
         "__class__": "BaseModel"
     },
     "BaseModel.da75596e-758c-4314-b23c-917cdd842886": {
@@ -38,5 +38,23 @@
         "name": "My_First_Model",
         "my_number": 89,
         "__class__": "BaseModel"
+    },
+    "BaseModel.b2df7485-6eea-48aa-b142-669f3425e005": {
+        "id": "b2df7485-6eea-48aa-b142-669f3425e005",
+        "created_at": "2022-02-01T14:14:46.614474",
+        "updated_at": "2022-02-01T14:14:46.614489",
+        "__class__": "BaseModel"
+    },
+    "User.c3b1787b-8d25-47b3-a83a-f0999b5ab8d7": {
+        "id": "c3b1787b-8d25-47b3-a83a-f0999b5ab8d7",
+        "created_at": "2022-02-06T12:06:01.033673",
+        "updated_at": "2022-02-06T12:06:01.033678",
+        "__class__": "User"
+    },
+    "Review.5da0fd41-2f22-4510-87ad-e5bf3e6c6e79": {
+        "id": "5da0fd41-2f22-4510-87ad-e5bf3e6c6e79",
+        "created_at": "2022-02-06T12:06:58.476820",
+        "updated_at": "2022-02-06T12:06:58.476826",
+        "__class__": "Review"
     }
 }

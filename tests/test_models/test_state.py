@@ -1,30 +1,21 @@
 #!/usr/bin/python3
-'''
-module containing User class tests
-'''
+"""Test class State"""
 
+import models
 import unittest
 from models.state import State
 
 
 class TestState(unittest.TestCase):
-    '''
-    Test class that tests the User class
-    '''
-
-    def setUp(self):
-        '''
-        test instance
-        '''
-        obj = State()
-        obj.name = "Delta"
-
+    """Simple test case for State class"""
     def test_attr(self):
-        '''
-        docs
-        '''
-        self.assertIs(obj.name, "Delta")
-        self.assertIsInstance(obj, State, "")
+        attr = hasattr(State, 'name')
+        self.assertEqual(attr, True)
+
+    def test_type(self):
+        """Test the type of State public attr"""
+        type_ = type(State.name).__name__
+        self.assertEqual(type_, "str")
 
 if __name__ == "__main__":
     unittest.main()

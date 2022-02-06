@@ -1,31 +1,33 @@
 #!/usr/bin/python3
-'''
-module containing User class tests
-'''
+"""Test case for class City"""
 
+import models
 import unittest
 from models.city import City
 
 
-class TestUser(unittest.TestCase):
-    '''
-    Test class that tests the User class
-    '''
+class TestCity(unittest.TestCase):
+    """Simple test model for class City"""
 
-    def setUp(self):
-        '''
-        Test iinstance of city class
-        '''
-        obj = City()
-        obj.name = "Asaba"
+    def test_attr(self):
+        """Test for attribute"""
+        attr_list = ['state_id', 'name']
+        is_attr = False
+        for attri in attr_list:
+            is_attr = hasattr(City, attri)
+            if not is_attr:
+                break
+        self.assertEqual(is_attr, True)
 
-    def test_attributes(self):
-        '''
-        test all attr
-        '''
-        self.assertIsInstance(obj, City, "")
-        self.assertIs(obj.name, "Asaba")
+    def test_type_state_id(self):
+        """Test the type of state id attribute"""
+        type_id = type(City.state_id).__name__
+        self.assertEqual(type_id, "str")
 
+    def test_type_name(self):
+        """Test the type of name attribute"""
+        type_ = type(City.name).__name__
+        self.assertEqual(type_, "str")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

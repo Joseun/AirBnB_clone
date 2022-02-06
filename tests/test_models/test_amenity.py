@@ -1,30 +1,22 @@
 #!/usr/bin/python3
-'''
-module containing User class tests
-'''
+""" Test for amenity class """
 
+import models
 import unittest
 from models.amenity import Amenity
+"""Test class Amenity"""
 
 
-class TestAmenity(unittest.TestCase):
-    '''
-    Test class that tests the Amenity class
-    '''
-    def setUp(self):
-        '''
-        test form object
-        '''
-        obj = Amenity()
-        obj.name = "water"
+class TestState(unittest.TestCase):
+    """Simple test case for State class"""
+    def test_attr(self):
+        attr = hasattr(Amenity, 'name')
+        self.assertEqual(attr, True)
 
-    def test_attributes(self):
-        '''
-        test all attributes
-        '''
-        self.assertIsInstance(obj, Amenity, "")
-        self.assertIs(obj.name, "water")
+    def test_type(self):
+        """Test the type of State public attr"""
+        type_ = type(Amenity.name).__name__
+        self.assertEqual(type_, "str")
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

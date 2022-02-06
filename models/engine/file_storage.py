@@ -64,33 +64,6 @@ class FileStorage:
             # file.seek(0)
             # convert back to json.
             json.dump(x, file, indent=4)
-
-    def update(self, class_id, update_data):
-        """ #Method JSON string
-        #Args:
-         #   - list_dictionaries: list of dicts
-          #  Returns: JSON representation of the list
-        """
-        dict_obj = {}
-        for k, v in FileStorage.__objects.items():
-            dict_obj[k] = v.to_dict()
-        if not stat(FileStorage.__file_path).st_size == 0:
-            with open(FileStorage.__file_path, 'r+') as file:
-                # First we load existing data into a dict.
-                file_data = json.load(file)
-        else:
-            file_data = {}
-        # Join new_data with file_data inside emp_details
-        x = file_data
-        # print("data in update fucntion{}>>>>>>......".format(update_data))
-        x[class_id] = update_data
-        # print("new updated json {}--------------------;;;;;".format(x))
-        # Sets file's current position at offset.
-        with open(FileStorage.__file_path, 'w') as file:
-            # file.seek(0)
-            # convert back to json.
-            json.dump(x, file, indent=4)
-
     def save(self):
         """ #Method JSON string
         #Args:

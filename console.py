@@ -2,6 +2,7 @@
 """Defining the command interpreter"""
 import cmd
 import json
+import re
 from models import storage
 from models.base_model import BaseModel
 from models.amenity import Amenity
@@ -12,6 +13,8 @@ from models.state import State
 from models.user import User
 
 
+
+all_objs = storage.all()
 class HBNBCommand(cmd.Cmd):
     """ AirBNB command intepreter  """
 
@@ -19,8 +22,6 @@ class HBNBCommand(cmd.Cmd):
         'BaseModel': BaseModel, 'User': User, 'Place': Place, 'State': State,
         'City': City, 'Amenity': Amenity, 'Review': Review
     }
-
-    all_objs = storage.all()
 
     prompt = '(hbnb) '
 
@@ -39,7 +40,8 @@ class HBNBCommand(cmd.Cmd):
             for k, v in HBNBCommand.classes.items():
                 if k == line:
                     obj = v()
-                    obj.save()
+                    storage.new(obj)
+                    storage.save()
                     print(obj.id)
 
     def do_show(self, line):
@@ -54,13 +56,12 @@ class HBNBCommand(cmd.Cmd):
             elif len(line) != 2:
                 print("** instance id missing **")
             else:
-                for k, v in self.all_objs.items():
-                    x = ("{}.{}".format(line[0], line[1]))
-                    if k == x:
-                        print(all_objs[k])
-                        return
-                    else:
-                        print("** no instance found **")
+                x = ("{}.{}".format(line[0], line[1]))
+                if x in all_objs:
+                    print(all_objs[x])
+                    return
+                else:
+                    print("** no instance found **")
 
     def do_destroy(self, line):
         """ Deletes an instance of BaseModel\n """
@@ -85,15 +86,14 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, line):
         """ Prints string representation of all instances of BaseModel\n """
 
-        storage.reload()
         if not line:
-            for k, v in self.all_objs.items():
+            for k, v in all_objs.items():
                 print(str(storage.all()[k]))
         else:
             if line not in HBNBCommand.classes:
                 print("** class doesn't exist **")
             else:
-                for k, v in self.all_objs.items():
+                for k, v in all_objs.items():
                     x = k.split('.')
                     if x[0] == line:
                         print(str(storage.all()[k]))
@@ -107,21 +107,23 @@ class HBNBCommand(cmd.Cmd):
             if line[0] in HBNBCommand.classes:
                 if len(line) > 1:
                     x = ("{}.{}".format(line[0], line[1]))
-                    if x in self.all_objs:
+                    if x in all_objs:
                         if len(line) > 2:
                             if len(line) > 3:
-                                y = self.all_objs[x]
-                                y = y.to_dict()
-                                if line[2] in y:
-                                    valtype = type(y[line[2]])
-                                    y[line[2]] = valtype(line[3])
-                                    storage.update(x, y)
-                                    # HBNBCommand.classes[line[0]].save(self)
-                                    storage.reload()
-                                    storage.save()
-                                    return
+                                y = all_objs[x]
+                                #y = y.to_dict()
+                                if line[2] in dir(y):
+                                    valtype = type(getattr(y, line[2]))
+                                    y.__dict__[line[2]] = valtype(line[3])
+                                    #storage.update(x, y)
+                                    #print(y)
+                                    #HBNBCommand.classes[line[0]](**y)
+                                    #HBNBCommand.classes[line[0]].save(self)
                                 else:
-                                    print("** attribute doesn't exist **")
+                                    y.__dict__[line[2]] = line[3]
+                                storage.new(y)
+                                storage.save()
+                                return
                             else:
                                 print("** value missing **")
                         else:
@@ -133,40 +135,47 @@ class HBNBCommand(cmd.Cmd):
             else:
                 print("** class doesn't exist **")
 
-    '''    def onecmd(self, line):
-        """Interpret the argument as though it had been typed in response
-        to the prompt.
-        Checks whether this line is typed at the normal prompt or in
-        a breakpoint command list definition.
-        """
-        try:
-            classname, command = line.split('.')
-            if classname not in HBNBCommand.classes:
-                return cmd.Cmd.onecmd(self, line)
-            else:
-                if command == 'all()':
-                    self.do_all(classname)
-                    return
-                elif command == 'count()':
-                    counter = 0
-                    #all_objs = models.storage.all()
-                    for k in all_objs.keys():
-                        key = k.split('.')
-                        if key[0] == classname:
-                            counter += 1
-                            print(counter)
-                            return
-                        else:
-                            raw = command[command.find('(')+1:command.find(')')]
-                            raw = raw.split(', ')
-                            id = raw[0][1:-1]
-                            c = command[0: command.find('(')]
-                            cm = "{} {} {} {}".format(c, classname, id.replace('"', ''),
-                                                      " ".join(raw[1:]))
-                            return cmd.Cmd.onecmd(self, cm)
-        except:
-            return cmd.Cmd.onecmd(self, line)
-    '''
+    def default(self, arg: str) -> None:
+        pattern = re.compile(r'(\w+)\.(\w+)\(([\S ]*)\)')
+        res = pattern.findall(arg)
+        if len(res) < 1 or len(res[0]) < 3:
+            super().default(arg)
+            return
+        class_name = res[0][0]
+        command = res[0][1]
+        args = res[0][2]
+        if command == "all":
+            self.onecmd(f"{command} {class_name}")
+            return
+        elif command == "count":
+            count = self.do_all(f"{class_name}", count=True)
+            print(count)
+            return
+        else:
+            if "{" in args:
+                self.dict_update(class_name, args)
+                return
+            self.onecmd(f"{command} {class_name} {args}")
+            return
+        super().default(arg)
+
+    def dict_update(self, class_name: str, arg: str) -> None:
+        pattern = re.compile(r'([\w\-]+),\s*(\{.*\})')
+        res = pattern.findall(arg)
+        if len(res) < 1:
+            self.onecmd(f"update {class_name} {arg}")
+            return
+        id = res[0][0]
+        obj_dict = res[0][1]
+        obj_dict = obj_dict.strip("{}").split(",")
+        for attr_str in obj_dict:
+            attr = attr_str.split(":")
+            name = attr[0].strip(' "')
+            value = ""
+            if len(attr) > 1:
+                value = attr[1].strip()
+                self.onecmd(f"update {class_name} {id} {name} {value}")
+
     def do_EOF(self, arg):
         """ End of file"""
         return True
