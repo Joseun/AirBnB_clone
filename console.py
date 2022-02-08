@@ -121,6 +121,7 @@ class HBNBCommand(cmd.Cmd):
                                     #HBNBCommand.classes[line[0]].save(self)
                                 else:
                                     y.__dict__[line[2]] = line[3]
+                                y.save()
                                 storage.new(y)
                                 storage.save()
                                 return
